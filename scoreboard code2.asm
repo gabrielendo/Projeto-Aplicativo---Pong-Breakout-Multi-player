@@ -3,6 +3,7 @@
 	PLAYER2: .asciiz "Player 2"
 	TIME:    .asciiz "Time"
 	LEFT:	 .asciiz "Left:"
+	ESPAÇOPRETO: .asciiz "  "	#"Limpagem" do contador de segunds
 	
 		
 .text
@@ -18,7 +19,7 @@ LOOP: 	beq $s2,$t1,PLACAR1
 	
 	addi $t0,$zero,0	 #Valor de $t0 = 0
 	addi $t2,$zero,0	 #Valor de $t2 = 0
-	addi $t3,$zero,20	#Valor de $t3 = 90, valor dos segundos
+	addi $t3,$zero,90	#Valor de $t3 = 90, valor dos segundos
 	
 #Placar do jogador 1
 	la $a0,PLAYER1   #Endereco da P1
@@ -71,6 +72,14 @@ Placar_De_Tempo:  la $a0,TIME  #Endereco da TIME
 	
 
 	TIMER:
+	#Limpagem de contador
+	la $a0, ESPAÇOPRETO
+	li $a1,290
+	li $a2,130
+	li $a3,0X00
+	li $v0,104
+	syscall
+	
 	
 	la $a0,($t3)
 	li $a1,290
@@ -83,7 +92,7 @@ Placar_De_Tempo:  la $a0,TIME  #Endereco da TIME
 	syscall
 	
 	subi $t3, $t3, 1
-	beq $t3,$zero , FIM
+	beq $t3,-1 , FIM
 	j TIMER
 
 
@@ -92,6 +101,5 @@ Placar_De_Tempo:  la $a0,TIME  #Endereco da TIME
 	FIM: 
 	li $v0, 10
 	syscall
-	
 	
 	
