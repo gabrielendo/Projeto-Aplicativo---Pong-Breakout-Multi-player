@@ -1,0 +1,21 @@
+Imprimir tela de início;
+Loop pra iniciar o jogo se ler enter;
+
+Loop principal:
+	Resetar tela;
+	Verificar teclas pressionadas;
+	Imprimir/atualizar blocos;
+	Imprimir/atualizar raquetes;
+	Imprimir/atualizar bola;
+	Verificar colisões bola-raquete e bola-bloco;
+	Atualizar pontuação;
+	Atualizar timer;
+	Verificar condições de término de jogo;
+	Sleep;
+
+Verificar jogador com maior pontuação;
+Tela indicando jogador vencedor;
+Fim;
+
+(e tocar música/sons ao longo)
+(utilizar funções, implementadas com jumps)
