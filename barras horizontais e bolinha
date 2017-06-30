@@ -1,0 +1,94 @@
+.data
+
+Branco:  .word 0xffffffff
+hex: .word 0xff000000
+backgroundColor: .word 0x00000000
+
+.text
+
+		#preenche tela de preto
+	li $t1,0xFF012C00
+	li $s2,0xFF000000
+	li $s1,0x00000000
+LOOP: 	beq $s2,$t1,RAQUETE1
+	sw $s1,0($s2)
+	addi $s2,$s2,4
+	j LOOP
+	
+RAQUETE1:
+
+#PRIMEIRA RAQUETE
+
+	li $t1,0xFF00ACB4 #POSIÇÃO Y INICIAL
+	li $s2,0xFF0070B4 #POSIÇÃO Y FINAL	
+	lw $s1,Branco	  #cor da raquete
+
+
+LOOPR1: #LOOP RAQUETE 1
+
+	beq $s2,$t1,RAQUETE1.2
+	sw $s1,0($s2)
+	addi $s2,$s2,320
+	j LOOPR1
+	
+RAQUETE1.2: #segundo loop para aumentar a "expessura"
+
+	li $t1,0xFF00ACB8	#posição Yi + 4(deslocamento no eixo X)							
+	li $s2,0xFF0070B8	#posição Yf + 4(deslocamento no eixo X)
+	lw $s1,Branco
+LOOPR2: beq $s2,$t1,RAQUETE2
+	sw $s1,0($s2)
+	addi $s2,$s2,320
+	j LOOPR2
+	
+RAQUETE2:
+
+#SEGUNDA RAQUETE
+
+	li $t1,0xFF00AD40 #POSIÇÃO Y INICIAL
+	li $s2,0xFF007140 #POSIÇÃO Y FINAL	
+	lw $s1,Branco	  #cor da raquete
+
+
+LOOPSR1: #LOOP RAQUETE 1
+
+	beq $s2,$t1,RAQUETE2.1
+	sw $s1,0($s2)
+	addi $s2,$s2,320
+	j LOOPSR1
+	
+RAQUETE2.1: #segundo loop para aumentar a "expessura"
+
+	li $t1,0xFF00AD44	#posição Yi + 4(deslocamento no eixo X)							
+	li $s2,0xFF007144	#posição Yf + 4(deslocamento no eixo X)
+	lw $s1,Branco
+LOOPSR2: beq $s2,$t1,BOLINHA
+	sw $s1,0($s2)
+	addi $s2,$s2,320
+	j LOOPSR2
+
+BOLINHA:
+	
+	#BOLINHA1
+
+	li $s2,0xFF004538 #POSIÇÃO Y INICIAL
+	li $t1,0xFF005078 #POSIÇÃO Y FINAL	
+	lw $s1,Branco	  #cor da bolinha
+
+LOOPB1: #LOOP bolinha1
+
+	beq $s2,$t1,BOLINHA1.2
+	sw $s1,0($s2)
+	addi $s2,$s2,320
+	j LOOPB1
+
+BOLINHA1.2: #segundo loop para aumentar a "expessura"
+
+	li $s2,0xFF00453C	#posição Yi + 4(deslocamento no eixo X)							
+	li $t1,0xFF00507C	#posição Yf + 4(deslocamento no eixo X)
+	lw $s1,Branco
+LOOPB2: beq $s2,$t1,new
+	sw $s1,0($s2)
+	addi $s2,$s2,320
+	j LOOPB2
+new:
