@@ -1,0 +1,103 @@
+.data
+Preto: .word 0x00000000
+Branco: .word 0xFFFFFFFF
+
+.text
+
+	
+###movimentação das raquetes ####
+#$t3 =  posição atual da raquete vertical				     
+#3 $t5 = contador
+# COMO UTILIZAR:  CARREGUE O ENDEREÇO INICIAL DA RAQUETE EM $s3 e jal DV1, quando quiser movimentar para direita, e jal EV1 quando for movimentar para a esquerda
+# valores iniciais dos jogos de das raquetes verticais:  
+# vertical superior: 0xFF002AF8
+# vertical inferior: 0xFF00FF78
+
+
+DV1:  	##DIREITA VERTICAL 1  #posição inicial da raquete: 0xFF002AF8
+
+	lw $s1,Preto #apaga na esquerda
+	lw $s2, Branco#imprime na direita
+	li $t5, 0
+DV:	
+
+	addi $t8, $t3, 4
+LOOPDV1: #LOOP apaga1
+
+	beq $t3,$t8,PulaDV1
+	sw $s1,0($t3)
+	addi $t3,$t3,1
+	j LOOPDV1
+PulaDV1: #pula linha (expessura)
+	subi $t3, $t3, 4
+	addi $t3, $t3, 320
+	beq $t5, 10, ImprimeDV1
+	addi $t5, $t5,1
+	j DV #retorna loop
+	
+	ImprimeDV1:
+	subi $t3, $t3, 3200
+	li $t5,0
+	addi $t3, $t3, 48
+DV2:  	addi $t8, $t3, 4
+LOOP2DV1: #LOOP imprime 1
+	beq $t3,$t8,Pula2DV1
+	sw $s2,0($t3)
+	addi $t3,$t3,1
+	j LOOP2DV1
+Pula2DV1: #pula linha (expessura)
+	subi $t3, $t3, 4
+	addi $t3, $t3, 320
+	beq $t5, 10, valorx
+	addi $t5, $t5,1
+	j DV2 #retorna loop
+	valorx:
+	subi $t3, $t3, 3248 #retorna o valor d $t3 para o inicial
+	prox:
+	
+	j prox
+	
+EV1:   	##ESQUERDA  #posição inicial da raquete: 0xFF002AF8
+	li $t3, 0xFF002AF8
+	lw $s1,Preto #apaga na esquerda
+	lw $s2, Branco#imprime na direita
+	li $t5, 0
+EV:	
+
+	subi $t8, $t3, 4
+LOOPEV1: #LOOP imprime esq
+
+	beq $t3,$t8,PulaEV1
+	sw $s2,0($t3)
+	subi $t3,$t3,1
+	j LOOPEV1
+PulaEV1: #pula linha (expessura)
+	addi $t3, $t3, 4
+	addi $t3, $t3, 320
+	beq $t5, 10, ApagaEV1
+	addi $t5, $t5,1
+	j EV #retorna loop
+	
+ApagaEV1:
+	subi $t3, $t3, 3200
+	li $t5,0
+	addi $t3, $t3, 48
+EV2:  	addi $t8, $t3, 4
+LOOP2EV1: #LOOP imprime 1
+	beq $t3,$t8,Pula2EV1
+	sw $s1,0($t3)
+	addi $t3,$t3,1
+	j LOOP2EV1
+Pula2EV1: #pula linha (expessura)
+	subi $t3, $t3, 4
+	addi $t3, $t3, 320
+	beq $t5, 10, valorx2
+	addi $t5, $t5,1
+	j EV2 #retorna loop
+	valorx2:
+	subi $t3, $t3, 3248 #retorna o valor d $t3 para o inicial
+	
+	
+	
+	
+	
