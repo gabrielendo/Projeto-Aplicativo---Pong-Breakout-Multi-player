@@ -1,0 +1,95 @@
+.data
+Preto: .word 0x00000000
+Branco: .word 0xFFFFFFFF
+cor1: .word 0xA3A3A3A3
+cor2: .word 0x2E2E2E2E
+#inicial raquete vertical 1(esquerda): 0xFF0070A4
+#inicial raquete vertical 2(direita): 0xFF00AD48 
+
+
+# carregar em $t4 a posição da raquete(se atualiza sozinho)
+# para subir carregue em $t4 e jal CH1(Cima)
+#para descer carregue $t4 e jal DH1 (Descida)
+
+.text
+	
+	CH1: #CIMA HORIZONTAl	
+	lw $s1,Preto #apaga 
+	lw $s2, Branco#imprime
+	li $t5, 0
+	
+	CH:	
+	addi $t8, $t4, 4
+LOOPCH1: #LOOP SOBE
+
+	beq $t4,$t8,PulaCH1
+	sw $s2,0($t4)
+	addi $t4,$t4,1
+	j LOOPCH1
+PulaCH1: #pula linha (expessura)
+	subi $t4, $t4, 4
+	subi $t4, $t4, 320
+	beq $t5, 4, apagaCH1
+	addi $t5, $t5,1
+	j CH #retorna loop
+apagaCH1:
+	addi $t4, $t4, 15360
+	li $t5, 0
+CH2:	addi $t8, $t4, 4
+LOOPCH2: beq $t4, $t8, PulaCH2
+	 sw $s1,0($t4)
+	addi $t4, $t4, 1
+	j LOOPCH2
+PulaCH2:
+	subi $t4, $t4, 4
+	addi $t4, $t4, 320
+	beq $t5, 4, NextvalueC
+	addi $t5, $t5, 1
+	j CH2
+	
+	NextvalueC: #retorna para $t4, a posição inicial da raquete
+	subi $t4, $t4, 16644
+	 j LOOPPRINCIPAL #MUDARRR
+	 
+	 
+	 
+	DH1:
+	#desce
+	li $t4, 0xFF0070A4
+	lw $s1,Preto #apaga 
+	lw $s2, Branco#imprime
+	li $t5, 0
+	
+DH:	addi $t8, $t4, 4
+	LOOPDH1: #LOOP DESCE 1
+
+	beq $t4,$t8,PulaDH1
+	sw $s1,0($t4)
+	addi $t4,$t4,1
+	j LOOPDH1
+PulaDH1: #pula linha (expessura)
+	subi $t4, $t4, 4
+	addi $t4, $t4, 320
+	beq $t5, 4, apagaDH1
+	addi $t5, $t5,1
+	j DH #retorna loop
+apagaDH1:
+	addi $t4, $t4, 13760
+	li $t5, 0
+DH2:	addi $t8, $t4, 4
+LOOPDH2: beq $t4, $t8, PulaDH2
+	 sw $s2,0($t4)
+	addi $t4, $t4, 1
+	j LOOPDH2
+PulaDH2:
+	subi $t4, $t4, 4
+	addi $t4, $t4, 320
+	beq $t5, 4, NextvalueD
+	addi $t5, $t5, 1
+	j DH2
+	
+	NextvalueD: #retorna para $t4, a posição inicial da raquete
+	subi $t4, $t4, 15356
+	
+	
+	j LUPPRINCIPAL #MUDARRR
