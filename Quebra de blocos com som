@@ -1,0 +1,158 @@
+.data
+
+BARRASGERAIS: .asciiz "barrasgerais.bin"
+		
+			
+			## OBS ENDO: MUDAR A LABEL EM QUE OS LOOPS DE QUEBRA DE BLOCAM PULAM QUANDO PASSAR PARA O JOGO(ESTAO EM UMA LABEL CRIADA FICTICIA(a e B, só da ctrl f))
+			#posição das barras em memoria
+			
+NUM: .word	#Parte do som
+NOTASV: 60, 200, 60, 200, 60, 200, 60, 200, 60, 200, 60, 200, 60, 200, 60, 200, 60, 200, 60, 200, 60, 200, 60, 200
+NOTASH: 60, 200, 60, 200, 60, 200, 60, 200, 60, 200, 60, 200, 60, 200, 60, 200, 60, 200, 60, 200, 60, 200, 60, 200
+
+
+
+	
+
+	
+	
+		
+							 ################################################################
+barra1:		.word 0xFF000522			## endereço em memoria no siplay de cada barra(posição inicial: ##
+barra2:		.word 0xFF00055C		        ## numeração das barras: 1 2 3					##	
+barra3:		.word 0xFF000592			##			 4 5 6					##
+barra4:		.word 0xFF0016A4			##	       ## 7 8             23 23  ##			##
+barra5:		.word 0xFF0016DA			##             ## 9 10            21 22	 ##			##	
+barra6:		.word 0xFF001714			##             ## 11 12            19 20 ##			##	
+barra7:		.word 0xFF002BC4			##		        13 15 17  				##
+barra8:		.word 0xFF002BD0			##                      14 16 18 				##
+							##		###########################			##
+barra9:		.word 0xFF007444			## 		    lw $s2, barrax				##
+barra10:	.word 0xFF007310			##             jal quebrav(quando vertical)			##
+barra11:	.word 0xFF00BCC4			##           jal quebrah (quando horizontal)			##
+barra12:	.word 0xFF00BB00			 ################################################################
+barra13:	.word 0xFF0107E2
+barra14:	.word 0xFF011824
+barra15:	.word 0xFF01081A
+barra16:	.word 0xFF01185A
+barra17:	.word 0xFF010852
+barra18:	.word 0xFF011892
+barra19:	.word 0xFF00BD8F
+barra20:	.word 0xFF00BDA0
+barra21:	.word 0xFF00750F
+barra22:	.word 0xFF007520
+barra23:	.word 0xFF002C8F
+barra24:	.word 0xFF002CA0
+
+Preto:  .word  0x00000000
+.text
+## endereço em memoria no siplay de cada barra(posição inicial:
+## numeração das barras: 1 2 3
+##			 4 5 6
+##	          7 8             23 23  ##
+##                9 10            21 22	 ##
+##               11 12            19 20  ##
+##		        13 15 17  
+##                      14 16 18 	
+
+	## lw $s2, barrax
+	##jal quebrav(quando vertical)
+	##jal quebrah (quando horizontal)	
+
+###"QUEBRA BLOCOS VERTICAIS" ########
+	QUEBRAV:
+	li $t5,0
+	 #POSIÇÃO  INICIAL = X(registrador)
+LoopQV1:
+	addi $t1, $s2, 52 #poe em $t1, o valor final daquela linha do bloco	
+	lw $s1,Preto	  #cor da raquete
+
+
+LoopQV2: #LOOP de quebra de blocos 1
+
+	beq $s2,$t1,LoopQV3
+	sw $s1,0($s2)
+	addi $s2,$s2,1
+	j LoopQV2	
+	
+	LoopQV3:
+	sub $s2, $s2, 52 #retorna o valor anterior do x inicial(Xf-48 pixels)
+		#aumenta expessura
+	
+	addi $s2, $s2,320
+	addi $t1, $t1, 320  #soma 320(pula linha y)
+	beq $t5, 10, SOMV #o segundo numero determina a quantidade de loops("EXPESSURA")
+	addi $t5,$t5, 1  
+	j LoopQV1
+
+SOMV:	#som do bloco vertical quebrado
+	la $s0,NUM
+	lw $s1,0($s0)
+	la $s0,NOTASV
+	li $t0,0
+	li $a2,65	#Instrumento
+	li $a3,50	#Volume
+	
+	lw $a0,0($s0)		#Nota
+	lw $a1,4($s0)		#Duraçãoo
+	li $v0,31		#31 (pausa mais curta)
+	syscall
+	move $a0,$a1		#sleep
+	li $v0,32
+	syscall
+	addi $s0,$s0,8
+	addi $t0,$t0,1
+
+a:
+
+	
+
+
+	###"QUEBRA BLOCOS HORIZONTAIS" ########	
+
+	
+		
+	QUEBRAH:	
+	li $t5,0
+	 #POSIÇÃO  INICIAL 
+LoopQH1:
+	addi $t1, $s2, 14 #poe em $t1, o valor final daquela linha do bloco	
+	lw $s1,Preto	  #cor da raquete
+
+
+LoopQH2: #LOOP de quebra de blocos 1
+
+	beq $s2,$t1,LoopQH3
+	sw $s1,0($s2)
+	addi $s2,$s2,1
+	j LoopQH2	
+	
+	LoopQH3:
+	sub $s2, $s2, 14 #retorna o valor anterior do x inicial(Xf-48 pixels)
+		#aumenta expessura
+	
+	addi $s2, $s2,320
+	addi $t1, $t1, 320  #soma 320(pula linha y)
+	beq $t5, 52, SOMH #o segundo numero determina a quantidade de loops("EXPESSURA")
+	addi $t5,$t5, 1  
+	j LoopQH1
+
+SOMH:	#som do bloco horizontal quebrado
+	la $s0,NUM
+	lw $s1,0($s0)
+	la $s0,NOTASH
+	li $t0,0
+	li $a2,65	#Instrumento
+	li $a3,50	#Volume
+	
+	lw $a0,0($s0)		#Nota
+	lw $a1,4($s0)		#Duraçãoo
+	li $v0,31		#31 (pausa mais curta)
+	syscall
+	move $a0,$a1		#sleep
+	li $v0,32
+	syscall
+	addi $s0,$s0,8
+	addi $t0,$t0,1
+
+B:
