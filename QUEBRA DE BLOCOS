@@ -1,19 +1,36 @@
-.data
+data
 
 BARRASGERAIS: .asciiz "barrasgerais.bin"
-			## OBS ENDO: MUDAR A LABEL EM QUE OS LOOPS DE QUEBRA DE BLOCAM PULAM QUANDO PASSAR PARA O JOGO(ESTAO EM UMA LABEL CRIADA FICTICIA(a e B, sÛ da ctrl f))
-barra1:		.word 0xFF000522
-barra2:		.word 0xFF00055C
-barra3:		.word 0xFF000592
-barra4:		.word 0xFF0016A4
-barra5:		.word 0xFF0016DA
-barra6:		.word 0xFF001714
-barra7:		.word 0xFF002BC4
-barra8:		.word 0xFF002BD0
-barra9:		.word 0xFF007444
-barra10:	.word 0xFF007310
-barra11:	.word 0xFF00BCC4
-barra12:	.word 0xFF00BB00
+		
+			
+			## OBS ENDO: MUDAR A LABEL EM QUE OS LOOPS DE QUEBRA DE BLOCAM PULAM QUANDO PASSAR PARA O JOGO(ESTAO EM UMA LABEL CRIADA FICTICIA(a e B, s√≥ da ctrl f))
+			#posi√ß√£o das barras em memoria
+			
+
+
+
+
+
+
+	
+
+	
+	
+		
+							 ################################################################
+barra1:		.word 0xFF000522			## endere√ßo em memoria no siplay de cada barra(posi√ß√£o inicial: ##
+barra2:		.word 0xFF00055C		        ## numera√ß√£o das barras: 1 2 3					##	
+barra3:		.word 0xFF000592			##			 4 5 6					##
+barra4:		.word 0xFF0016A4			##	       ## 7 8             23 23  ##			##
+barra5:		.word 0xFF0016DA			##             ## 9 10            21 22	 ##			##	
+barra6:		.word 0xFF001714			##             ## 11 12            19 20 ##			##	
+barra7:		.word 0xFF002BC4			##		        13 15 17  				##
+barra8:		.word 0xFF002BD0			##                      14 16 18 				##
+							##		###########################			##
+barra9:		.word 0xFF007444			## 		    lw $s2, barrax				##
+barra10:	.word 0xFF007310			##             jal quebrav(quando vertical)			##
+barra11:	.word 0xFF00BCC4			##           jal quebrah (quando horizontal)			##
+barra12:	.word 0xFF00BB00			 ################################################################
 barra13:	.word 0xFF0107E2
 barra14:	.word 0xFF011824
 barra15:	.word 0xFF01081A
@@ -29,8 +46,8 @@ barra24:	.word 0xFF002CA0
 
 Preto:  .word  0x00000000
 .text
-## endereÁo em memoria no siplay de cada barra(posiÁ„o inicial:
-## numeraÁ„o das barras: 1 2 3
+## endere√ßo em memoria no siplay de cada barra(posi√ß√£o inicial:
+## numera√ß√£o das barras: 1 2 3
 ##			 4 5 6
 ##	          7 8             23 23  ##
 ##                9 10            21 22	 ##
@@ -45,7 +62,7 @@ Preto:  .word  0x00000000
 ###"QUEBRA BLOCOS VERTICAIS" ########
 	QUEBRAV:
 	li $t5,0
-	 #POSI«√O  INICIAL = X(registrador)
+	 #POSI√á√ÉO  INICIAL = X(registrador)
 LoopQV1:
 	addi $t1, $s2, 52 #poe em $t1, o valor final daquela linha do bloco	
 	lw $s1,Preto	  #cor da raquete
@@ -78,7 +95,7 @@ LoopQV2: #LOOP de quebra de blocos 1
 		
 	QUEBRAH:	
 	li $t5,0
-	 #POSI«√O  INICIAL 
+	 #POSI√á√ÉO  INICIAL 
 LoopQH1:
 	addi $t1, $s2, 14 #poe em $t1, o valor final daquela linha do bloco	
 	lw $s1,Preto	  #cor da raquete
