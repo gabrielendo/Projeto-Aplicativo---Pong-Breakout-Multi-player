@@ -1,0 +1,19 @@
+.data
+	NUM: .word 
+	SOMRAQUETE: 72, 300
+
+.text
+	la $s0,NUM
+	lw $s1,0($s0)
+	la $s0,SOMRAQUETE
+	li $t0,0
+	li $a2,65	#Instrumento
+	li $a3,50	#Volume
+	
+	lw $a0,0($s0)		#Nota
+	lw $a1,4($s0)		#Duraçãoo
+	li $v0,31		#31 (pausa mais curta)
+	syscall
+	move $a0,$a1		#sleep
+	li $v0,32
+	syscall
