@@ -1,0 +1,165 @@
+.data
+
+.text
+# $s0: tempo restante em segundos
+# $s3: auxiliar do timer
+# $s1: pontuacao do jogador 1
+# $s2: pontuacao do jogador 2
+# $s4: posicao da raquete de cima (P1)
+# $s5: posicao da raquete da direita (P2)
+# $s6: posicao da raquete de baixo (P2)
+# $s7: posicao da raquete da esquerda (P1)
+# $t9: posicao da bola 1
+# $t8: angulo da trajetoria da bola 1 
+# $t7: posicao da bola 2
+# $t6: angulo da trajetoria da bola 2
+# $t9 = posição bola 1
+
+
+
+# $t0= estado da colisao
+#0= sem colisao 
+#1= colisao lateral raquetes
+#2 = colisao raquetes horizontais
+#$t2, temporario para checar a colisao, contem os endereços da linha de contato com a bolinha
+#$t3 contem o centro da bolinha = $t9 + 964
+#CHECAGEM NA RAQUETE DE CIMA 
+colisaoraquetecima:
+	li $t0, 0
+	move $s4, $t2  #poe o endereço da raquete superior em t2
+	addi $t3, $t9, 964
+	addi $t2, $t2, 3200
+	addi $t5, $t2, 48
+checkcima:
+	beq $t2, $t3, COLIDEH
+	beq $t2, $t5, colisaoraquetebaixo  	
+	addi $t2, $t2, 1	
+	j checkcima
+
+COLIDEH:
+	li $t0, 2
+	jal ATUALIZABOLA1
+colisaoraquetebaixo:
+	li $t0, 0
+	move $s6, $t2
+	addi $t3, $t9, 964
+	addi $t5, $t2, 48
+checkbaixo:
+	beq $t2, $t3, COLIDEH
+	beq $t2, $t5, colisaoraqueteesq
+	addi $t2, $t2, 1
+	j checkbaixo
+	
+	
+colisaoraqueteesq:
+	li $t0, 0 
+	move $s7, $t2
+	addi $t3, $t9, 964
+	addi $t2, $t2, 4
+	addi $t5, $t2, 15360
+checkesquerda: 
+	beq $t2, $t3, COLIDEV
+	beq $t2, $t5, colisaoraquetedir
+	addi $t2, $t2, 320
+	j checkesquerda
+		
+COLIDEV:
+	li $t0, 1
+	jal ATUALIZABOLA1
+	
+colisaoraquetedir:
+	li $t0, 0
+	move $s5, $t2
+	addi $t5, $t2, 15360
+	addi $t3, $t9, 964
+checkdireita:
+	beq $t2, $t3, COLIDEV
+	beq $t2, $t5, testebolinha2 #mudar
+	addi $t2, $t2, 320
+	j checkdireita
+	
+testebolinha2:
+
+#teste da bolinha 2
+
+colisaoraquetecima2:
+	li $t1, 0
+	move $s4, $t2  #poe o endereço da raquete superior em t2
+	addi $t3, $t7, 964
+	addi $t2, $t2, 3200
+	addi $t5, $t2, 48
+checkcima2:
+	beq $t2, $t3, COLIDEH2
+	beq $t2, $t5, colisaoraquetebaixo  2	
+	addi $t2, $t2, 1	
+	j checkcima2
+
+COLIDEH2:
+	li $t1, 2
+	jal ATUALIZABOLA2
+colisaoraquetebaixo2:
+	li $t1, 0
+	move $s6, $t2
+	addi $t3, $t7, 964
+	addi $t5, $t2, 48
+checkbaixo2:
+	beq $t2, $t3, COLIDEH2
+	beq $t2, $t5, colisaoraqueteesq2
+	addi $t2, $t2, 1
+	j checkbaixo2
+	
+	
+colisaoraqueteesq2:
+	li $t1, 0 
+	move $s7, $t2
+	addi $t3, $t7, 964
+	addi $t2, $t2, 4
+	addi $t5, $t2, 15360
+checkesquerda2: 
+	beq $t2, $t3, COLIDEV2
+	beq $t2, $t5, colisaoraquetedir2
+	addi $t2, $t2, 320
+	j checkesquerda2
+		
+COLIDEV2:
+	li $t1, 1
+	jal ATUALIZABOLA2
+	
+colisaoraquetedir2:
+	li $t1, 0
+	move $s5, $t2
+	addi $t5, $t2, 15360
+	addi $t3, $t7, 964
+checkdireita2:
+	beq $t2, $t3, COLIDEV2
+	beq $t2, $t5, funçaocontinua #mudar
+	addi $t2, $t2, 320
+	j checkdireita2
+
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

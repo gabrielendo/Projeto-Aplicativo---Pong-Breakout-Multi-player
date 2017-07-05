@@ -1,0 +1,200 @@
+.data
+
+	
+	
+		
+							 ################################################################
+barra1:		.word 0xFF000522			## endereço em memoria no siplay de cada barra(posição inicial: ##
+barra2:		.word 0xFF00055C		        ## numeração das barras: 1 2 3					##	
+barra3:		.word 0xFF000592			##			 4 5 6					##
+barra4:		.word 0xFF0016A4			##	       ## 7 8             23 23  ##			##
+barra5:		.word 0xFF0016DA			##             ## 9 10            21 22	 ##			##	
+barra6:		.word 0xFF001714			##             ## 11 12            19 20 ##			##	
+barra7:		.word 0xFF002BC4			##		        13 15 17  				##
+barra8:		.word 0xFF002BD0			##                      14 16 18 				##
+							##		###########################			##
+barra9:		.word 0xFF007444			## 		    lw $s2, barrax				##
+barra10:	.word 0xFF007310			##             jal quebrav(quando vertical)			##
+barra11:	.word 0xFF00BCC4			##           jal quebrah (quando horizontal)			##
+barra12:	.word 0xFF00BB00			 ################################################################
+barra13:	.word 0xFF0107E2
+barra14:	.word 0xFF011824
+barra15:	.word 0xFF01081A
+barra16:	.word 0xFF01185A
+barra17:	.word 0xFF010852
+barra18:	.word 0xFF011892
+barra19:	.word 0xFF00BD8F
+barra20:	.word 0xFF00BDA0
+barra21:	.word 0xFF00750F
+barra22:	.word 0xFF007520
+barra23:	.word 0xFF002C8F
+barra24:	.word 0xFF002CA0
+
+# $s0: tempo restante em segundos
+# $s3: auxiliar do timer
+# $s1: pontuacao do jogador 1
+# $s2: pontuacao do jogador 2
+# $s4: posicao da raquete de cima (P1)
+# $s5: posicao da raquete da direita (P2)
+# $s6: posicao da raquete de baixo (P2)
+# $s7: posicao da raquete da esquerda (P1)
+# $t9: posicao da bola 1
+# $t8: angulo da trajetoria da bola 1 
+# $t7: posicao da bola 2
+# $t6: angulo da trajetoria da bola 2
+# $t9 = posição bola 1
+
+
+
+# $t0= estado da colisao
+#0= sem colisao 
+#1= colisao lateral raquetes
+#2 = colisao raquetes horizontais
+#$t2, temporario para checar a colisao, contem os endereços da linha de contato com a bolinha
+#$t3 contem o centro da bolinha = $t9 + 964
+#CHECAGEM NA RAQUETE DE CIMA 
+
+.text
+
+#colisoes horizontias
+#bola 1
+#cima
+barra4:
+	li $t0, 0
+	addi $t3, $t9, 964 #t3 = meio da bolinha
+	lw $t4, barra4
+	addi $t4, $t4, 3200
+	addi $t5, $t4, 48 
+checkb4:beq $t4, $t3, COLIDEH
+	beq $t4, $t5, barra5
+	addi $t4, $t4, 1
+	j checkb4
+	
+	
+COLIDEH: 
+	li $t0, 2
+	j loopprincipal
+	
+	barra5:
+	li $t0, 0
+	addi $t3, $t9, 964 #t3 = meio da bolinha
+	lw $t4, barra5
+	addi $t4, $t4, 3200
+	addi $t5, $t4, 48 
+checkb5	beq $t4, $t3, COLIDEH
+	beq $t4, $t5, barra6
+	addi $t4, $t4, 1
+	j checkb5
+	
+	barra6:
+	li $t0, 0
+	addi $t3, $t9, 964 #t3 = meio da bolinha
+	lw $t4, barra6
+	addi $t4, $t4, 3200
+	addi $t5, $t4, 48 
+checkb6:beq $t4, $t3, COLIDEH
+	beq $t4, $t5, barra13
+	addi $t4, $t4, 1
+	j checkb6
+
+	barra13:
+	li $t0, 0
+	addi $t3, $t9, 964 #t3 = meio da bolinha
+	lw $t4, barra13
+	addi $t5, $t4, 48 
+checkb13:beq $t4, $t3, COLIDEH
+	beq $t4, $t5, barra15
+	addi $t4, $t4, 1
+	j checkb13
+	
+	barra15:
+	li $t0, 0
+	addi $t3, $t9, 964 #t3 = meio da bolinha
+	lw $t4, barra15
+	addi $t5, $t4, 48 
+checkb15:beq $t4, $t3, COLIDEH
+	beq $t4, $t5, barra17
+	addi $t4, $t4, 1
+	j checkb15
+	
+		barra17:
+	li $t0, 0
+	addi $t3, $t9, 964 #t3 = meio da bolinha
+	lw $t4, barra17
+	addi $t5, $t4, 48 
+checkb17:beq $t4, $t3, COLIDEH
+	beq $t4, $t5, bola2
+	addi $t4, $t4, 1
+	j checkb17
+	
+	bola2:
+	
+	#segunda bolinha
+	barra4.2:
+	li $t1, 0
+	addi $t3, $t7, 964 #t3 = meio da bolinha
+	lw $t4, barra4
+	addi $t4, $t4, 3200
+	addi $t5, $t4, 48 
+checkb4.2:beq $t4, $t3, COLIDEH
+	beq $t4, $t5, barra5.2
+	addi $t4, $t4, 1
+	j checkb4
+	
+	
+COLIDEH: 
+	li $t1, 2
+	j loopprincipal
+	
+	barra5:
+	li $t1, 0
+	addi $t3, $t7, 964 #t3 = meio da bolinha
+	lw $t4, barra5
+	addi $t4, $t4, 3200
+	addi $t5, $t4, 48 
+checkb5	beq $t4, $t3, COLIDEH
+	beq $t4, $t5, barra6
+	addi $t4, $t4, 1
+	j checkb5
+	
+	barra6:
+	li $t0, 0
+	addi $t3, $t9, 964 #t3 = meio da bolinha
+	lw $t4, barra6
+	addi $t4, $t4, 3200
+	addi $t5, $t4, 48 
+checkb6:beq $t4, $t3, COLIDEH
+	beq $t4, $t5, barra13
+	addi $t4, $t4, 1
+	j checkb6
+
+	barra13:
+	li $t0, 0
+	addi $t3, $t9, 964 #t3 = meio da bolinha
+	lw $t4, barra13
+	addi $t5, $t4, 48 
+checkb13:beq $t4, $t3, COLIDEH
+	beq $t4, $t5, barra15
+	addi $t4, $t4, 1
+	j checkb13
+	
+	barra15:
+	li $t0, 0
+	addi $t3, $t9, 964 #t3 = meio da bolinha
+	lw $t4, barra15
+	addi $t5, $t4, 48 
+checkb15:beq $t4, $t3, COLIDEH
+	beq $t4, $t5, barra17
+	addi $t4, $t4, 1
+	j checkb15
+	
+		barra17:
+	li $t0, 0
+	addi $t3, $t9, 964 #t3 = meio da bolinha
+	lw $t4, barra17
+	addi $t5, $t4, 48 
+checkb17:beq $t4, $t3, COLIDEH
+	beq $t4, $t5, bola2
+	addi $t4, $t4, 1
+	j checkb17
+	
